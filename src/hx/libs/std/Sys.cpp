@@ -321,9 +321,20 @@ bool _hx_std_sys_exists( String path )
 **/
 void _hx_std_file_delete( String path )
 {
+   bool err = false;
+   #ifdef NEKO_WINDOWS
+   const wchar_t* _path = path.__WCStr();
+   hx::EnterGCFreeZone();
+   err = ( DeleteFileW(_path) != 0 );
+   hx::ExitGCFreeZone();
+   if (err)
+      hx::Throw( HX_CSTRING("Could not delete ") + path );
+   return;
+   #endif
+
    #ifndef EPPC
    hx::EnterGCFreeZone();
-   bool err = unlink(path.__s);
+   err = unlink(path.__s);
    hx::ExitGCFreeZone();
 
    if (err)
