@@ -300,6 +300,7 @@ bool _hx_std_sys_exists( String path )
    const wchar_t* _path = path.__WCStr();
    hx::EnterGCFreeZone();
    result =  GetFileAttributesW(_path) != INVALID_FILE_ATTRIBUTES;
+   hx::ExitGCFreeZone();
    return result;
    #endif
    
