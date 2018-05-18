@@ -80,6 +80,39 @@ static void file_error(const char *msg, String inName)
 
 }
 
+FILE * __fopen(String fname, String r)
+{
+   #ifdef NEKO_WINDOWS
+   auto wfname = fname.__WCStr();
+   auto wr = r.__WCStr();
+   hx::EnterGCFreeZone();
+   FILE *file = _wfopen(wfname,wr);
+   #else
+   hx::EnterGCFreeZone();
+   FILE *file = fopen(fname.__s,r.__s);
+   #endif
+   if (!file)
+      file_error("file_open",fname);
+   hx::ExitGCFreeZone();
+   return file;
+}
+
+FILE * __fopenrb(String fname)
+{
+   #ifdef NEKO_WINDOWS
+   auto wfname = fname.__WCStr();
+   hx::EnterGCFreeZone();
+   FILE *file = _wfopen(wfname,L"rb");
+   #else
+   hx::EnterGCFreeZone();
+   FILE *file = fopen(fname.__s,"rb");
+   #endif
+   if (!file)
+      file_error("file_open",fname);
+   hx::ExitGCFreeZone();
+   return file;
+}
+
 /**
    file_open : f:string -> r:string -> 'file
    <doc>
@@ -89,12 +122,8 @@ static void file_error(const char *msg, String inName)
 **/
 Dynamic _hx_std_file_open( String fname, String r )
 {
-   hx::EnterGCFreeZone();
-   FILE *file = fopen(fname.__s,r.__s);
-   if (!file)
-      file_error("file_open",fname);
-   hx::ExitGCFreeZone();
-
+   
+   FILE * file = __fopen(fname, r);
    fio *f = new fio;
    f->create(file,fname,true);
    return f;
@@ -292,8 +321,8 @@ String _hx_std_file_contents_string( String name )
 {
    std::vector<char> buffer;
 
+   FILE * file = __fopenrb(name);
    hx::EnterGCFreeZone();
-   FILE *file = fopen(name.__s, "rb");
    if(!file)
       file_error("file_contents",name);
 
@@ -332,8 +361,8 @@ String _hx_std_file_contents_string( String name )
 Array<unsigned char> _hx_std_file_contents_bytes( String name )
 {
 
+   FILE *file = __fopenrb(name);
    hx::EnterGCFreeZone();
-   FILE *file = fopen(name.__s, "rb");
    if(!file)
       file_error("file_contents",name);
 

@@ -295,12 +295,20 @@ void _hx_std_sys_exit( int code )
 **/
 bool _hx_std_sys_exists( String path )
 {
+   bool result = false;
+   #ifdef NEKO_WINDOWS
+   const wchar_t* _path = path.__WCStr();
+   hx::EnterGCFreeZone();
+   result =  GetFileAttributesW(_path) != INVALID_FILE_ATTRIBUTES;
+   return result;
+   #endif
+   
    #ifdef EPPC
    return true;
    #else
    struct stat st;
    hx::EnterGCFreeZone();
-   bool result =  stat(path.__s,&st) == 0;
+   result =  stat(path.__s,&st) == 0;
    hx::ExitGCFreeZone();
    return result;
    #endif
