@@ -264,13 +264,23 @@ int _hx_std_sys_command( String cmd )
    #if defined(HX_WINRT) || defined(EMSCRIPTEN) || defined(EPPC) || defined(APPLETV) || defined(HX_APPLEWATCH)
    return -1;
    #else
+	   
+   int result = 0;
+   
+   #if defined(NEKO_WINDOWS)
+   hx::EnterGCFreeZone();
+   result =  _wsystem(cmd.__WCStr());
+   hx::ExitGCFreeZone();
+   #else
+   
    if( !cmd.__s || !cmd.length )
       return -1;
 
    hx::EnterGCFreeZone();
-   int result = system(cmd.__s);
+   result = system(cmd.__s);
    hx::ExitGCFreeZone();
-
+   #endif
+   
    #if !defined(NEKO_WINDOWS)
    result = WEXITSTATUS(result) | (WTERMSIG(result) << 8);
    #endif
