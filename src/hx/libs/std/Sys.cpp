@@ -22,15 +22,19 @@
    #include <errno.h>
    #ifndef EPPC
       #include <unistd.h>
-      #include <dirent.h>
-      #include <termios.h>
+	  #if defined(__ORBIS__)
+	     #include <sys/dirent.h>
+	  #elif
+		 #include <dirent.h>
+		 #include <termios.h>		 
+         #include <sys/times.h>
+	  #endif
       #include <sys/time.h>
-      #include <sys/times.h>
    #endif
    #include <limits.h>
    #ifndef ANDROID
       #include <locale.h>
-      #if !defined(BLACKBERRY) && !defined(EPPC) && !defined(GCW0)
+      #if !defined(BLACKBERRY) && !defined(EPPC) && !defined(GCW0) && !defined(__ORBIS__)
          #include <xlocale.h>
       #endif
    #endif
