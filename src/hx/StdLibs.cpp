@@ -30,6 +30,7 @@ typedef int64_t __int64;
 #include <map>
 #include <stdio.h>
 #include <time.h>
+#include <clocale>
 
 
 #ifdef HX_ANDROID
