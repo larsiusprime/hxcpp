@@ -251,6 +251,7 @@ void __hxcpp_stdlibs_boot()
       }
    }
    setlocale(LC_ALL, "");
+   setlocale(LC_NUMERIC, "C");
    //_setmode(_fileno(stdout), 0x00040000); // _O_U8TEXT
    //_setmode(_fileno(stderr), 0x00040000); // _O_U8TEXT
    //_setmode(_fileno(stdin), 0x00040000); // _O_U8TEXT
